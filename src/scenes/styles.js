@@ -5,7 +5,6 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: Colors.BACKGROUND,
-    alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
@@ -13,6 +12,9 @@ const styles = StyleSheet.create({
     fontFamily: Typography.FONT_FAMILY_REGULAR,
     fontSize: Typography.FONT_SIZE_48,
     color: Colors.PRIMARY,
+  },
+  categories: {
+    fontSize: Typography.FONT_SIZE_16,
   },
 });
 
