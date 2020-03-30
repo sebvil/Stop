@@ -6,12 +6,14 @@ import styles from './styles';
 const ActionButton = ({title, onPress, disabled}) => {
   console.log('DISABLED:', disabled);
   return (
-    <Button
-      title={title}
-      onPress={onPress}
-      disabled={disabled}
-      color={Colors.PRIMARY}
-    />
+    <View style={styles.button}>
+      <Button
+        title={title}
+        onPress={onPress}
+        disabled={disabled}
+        color={Colors.PRIMARY}
+      />
+    </View>
   );
 };
 

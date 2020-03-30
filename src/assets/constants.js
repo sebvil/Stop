@@ -13,11 +13,15 @@ export const CATEGORIES = [
   'Ciudad',
   'País',
   'Profesión',
-  'Herramienta o Utensilio',
-  'Nombre de Deportista',
-  'Nombre de Actor/Actriz',
-  'Nombre de Cantante',
+  'Deportes',
+  'Mamífero',
+  'Ave',
+  'Accidentes Geográficos',
+  'Compañías o Marcas',
+  'Anatomía',
+  'Verbo acabado en -ir',
+  'Verbo acabado en -ar',
+  'Verbo acabado en -er',
 ];
 
-export const TIME = 40000;
 export const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';

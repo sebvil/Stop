@@ -12,14 +12,34 @@ import styles from '_scenes/styles';
 import ActionButton from '_components/atoms/ActionButton';
 import {generateCategories} from '_utils/generateCategories';
 import Timer from '_components/atoms/Timer';
-import {TIME, LETTERS} from '_assets/constants';
+import {LETTERS} from '_assets/constants';
 import GridRow from '_components/atoms/GridRow';
 import Dialog from 'react-native-dialog';
-import {ALERT} from '../../styles/colors';
+import Sound from 'react-native-sound';
 
 export default class CategoriesScreen extends Component {
   constructor(props) {
     super(props);
+    this.currentTime = 0;
+    this.sound = new Sound(
+      'analog_watch_alarm_daniel_simion.mp3',
+      Sound.MAIN_BUNDLE,
+      (error) => {
+        if (error) {
+          console.log('failed to load the sound', error);
+          return;
+        }
+        this.sound.setCurrentTime(this.sound.getDuration() - 4);
+
+        // loaded successfully
+        console.log(
+          'duration in seconds: ' +
+            this.sound.getDuration() +
+            'number of channels: ' +
+            this.sound.getNumberOfChannels(),
+        );
+      },
+    );
     this.state = {
       isTimeSet: false,
       timerStart: false,
@@ -44,19 +64,24 @@ export default class CategoriesScreen extends Component {
     );
   };
 
+  getTime = (time) => {
+    this.currentTime = time;
+  };
   handleTimerComplete = () => {
+    if (this.currentTime === 0) {
+      this.sound.play();
+      this.sound.setCurrentTime(this.sound.getDuration() - 4);
+    }
     if (this.state.letters.length > 0) {
       this.setState({
         timerStart: false,
-        timerReset: false,
-        time: TIME,
+        timerReset: true,
         buttonDisabled: false,
       });
     } else {
       this.setState({
         timerStart: false,
         timerReset: false,
-        time: TIME,
         currentLetter: 'No hay más letras!',
       });
     }
@@ -71,20 +96,20 @@ export default class CategoriesScreen extends Component {
     } else if (time <= 0) {
       Alert.alert('Número inválido', 'El tiempo debe ser mayor que 0');
     }
+    this.currentTime = time * 1000;
     this.setState({time: time * 1000, isTimeSet: true});
-
   };
   onPress = () => {
     const index = Math.floor(Math.random() * this.state.letters.length);
     const letter = this.state.letters[index];
     const letters = this.state.letters.replace(letter, '');
-    this.setState({timerReset: true}, () => {
-      this.setState({
-        timerStart: true,
-        currentLetter: letter,
-        letters: letters,
-        buttonDisabled: true,
-      });
+
+    this.setState({
+      timerStart: true,
+      timerReset: false,
+      currentLetter: letter,
+      letters: letters,
+      buttonDisabled: true,
     });
   };
   render() {
@@ -119,7 +144,7 @@ export default class CategoriesScreen extends Component {
         </SafeAreaView>
       );
     }
-    console.log(this.state.buttonDisabled);
+    console.log('SHOULD BE DISABLED?', this.state.time === this.currentTime);
     return (
       <SafeAreaView style={styles.root}>
         <ScrollView>
@@ -135,7 +160,7 @@ export default class CategoriesScreen extends Component {
                   </GridRow>
                 );
               })}
-              <GridRow height={50}>
+              <GridRow height={this.state.currentLetter.length > 1 ? 100 : 50}>
                 <Text style={styles.title}>{this.state.currentLetter}</Text>
               </GridRow>
               <GridRow height={50}>
@@ -146,7 +171,7 @@ export default class CategoriesScreen extends Component {
                   reset={this.state.timerReset}
                   options={options}
                   handleFinish={this.handleTimerComplete}
-                  getTime={null}
+                  getTime={this.getTime}
                 />
               </GridRow>
               <GridRow height={50}>
@@ -154,6 +179,33 @@ export default class CategoriesScreen extends Component {
                   title={'Generar letra!'}
                   disabled={this.state.buttonDisabled}
                   onPress={this.onPress}
+                />
+              </GridRow>
+              <GridRow height={50}>
+                <ActionButton
+                  title={this.state.timerStart ? 'Parar Tiempo' : 'Continuar'}
+                  disabled={!this.state.buttonDisabled}
+                  onPress={() => {
+                    this.setState({timerStart: !this.state.timerStart});
+                  }}
+                />
+                <ActionButton
+                  title={'Resetear'}
+                  disabled={
+                    this.state.timerStart ||
+                    this.state.currentLetter === '-' ||
+                    !this.state.buttonDisabled
+                  }
+                  onPress={this.handleTimerComplete}
+                />
+              </GridRow>
+              <GridRow height={50}>
+                <ActionButton
+                  title={'Cambiar Tiempo'}
+                  disabled={this.state.buttonDisabled}
+                  onPress={() => {
+                    this.setState({isTimeSet: false});
+                  }}
                 />
               </GridRow>
             </Col>

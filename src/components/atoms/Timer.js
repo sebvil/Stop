@@ -60,7 +60,6 @@ export default class Timer extends Component {
     }
     if (this.props.reset && !prevProps.reset) {
       console.log('test3');
-
       this.reset(this.props.totalDuration);
     }
   }
@@ -100,7 +99,7 @@ export default class Timer extends Component {
     const now = this.state.remainingTime;
     const formatted = formatTimeString(now, msecs);
     if (typeof getTime === 'function') {
-      getTime(formatted);
+      getTime(now);
     }
     if (typeof getMsecs === 'function') {
       getMsecs(now);
