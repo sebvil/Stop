@@ -14,7 +14,7 @@ export default class WelcomeScreen extends Component {
   render() {
     return (
       <SafeAreaView style={styles.root}>
-        <ActionButton title={'Empezar Juego!'} onPress={this.onPress} />
+        <ActionButton title={'Empezr Juego!'} onPress={this.onPress} />
       </SafeAreaView>
     );
   }
